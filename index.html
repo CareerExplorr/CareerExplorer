@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore 7,706 US jobs in 267 careers: skills, talents, entry requirements, and what it takes to switch from one job to another.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232753c0'/%3E%3Cpath d='M16 6v20M16 12l-7 6M16 12l7 6M9 18v6M23 18v6' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Career Skill Tree</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#f1f3f7;--panel:#ffffff;--ink:#161e2c;--muted:#5a6479;--line:#dbe0e9;--soft:#e9edf4;
+--accent:#2753c0;--accent-soft:#e4ebfb;--leaf:#a35f00;--leaf-soft:#fbf0de;
+--grow:#0e8a6f;--fade:#d4553b;--zero:#d3d8e1;--stage:#fbfcfe;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"Public Sans","Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0e131c;--panel:#151c28;--ink:#e6eaf1;--muted:#9aa4b8;--line:#273143;--soft:#1c2433;
+--accent:#86a6ff;--accent-soft:#1f2c4a;--leaf:#f0b45a;--leaf-soft:#3a2a12;--grow:#2fc4a0;--fade:#f07a5f;--zero:#3a4354;--stage:#111723}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0e131c;--panel:#151c28;--ink:#e6eaf1;--muted:#9aa4b8;--line:#273143;--soft:#1c2433;
+--accent:#86a6ff;--accent-soft:#1f2c4a;--leaf:#f0b45a;--leaf-soft:#3a2a12;--grow:#2fc4a0;--fade:#f07a5f;--zero:#3a4354;--stage:#111723}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:clamp(16px,3vw,36px);padding-block:24px 48px}
+.wrap{max-width:1400px;margin:0 auto;display:grid;gap:18px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4vw,42px);letter-spacing:-.015em;margin:0;line-height:1.05;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:21px;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:15px;margin:0}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);max-width:80ch;margin:6px 0 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;gap:0}
+.stat b{font:800 24px var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.main{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:920px){.main{grid-template-columns:1fr}}
+nav{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px;max-height:760px;overflow:auto;align-content:start}
+@media (max-width:920px){nav{max-height:420px;order:2}}
+input[type=search],select{width:100%;font:15px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input:focus-visible,button:focus-visible,summary:focus-visible,canvas:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tree ul{list-style:none;margin:0;padding-left:12px;border-left:1px solid var(--line)}
+.tree>ul{padding-left:0;border:0}
+.tree summary{cursor:pointer;font-weight:600;font-size:14px;padding:3px 4px;border-radius:5px;list-style:none;display:flex;gap:6px;align-items:baseline}
+.tree summary::-webkit-details-marker{display:none}
+.tree summary::before{content:"▸";color:var(--muted);font-size:11px;width:10px;flex:none}
+.tree details[open]>summary::before{content:"▾"}
+.tree summary .n{font:500 11px var(--mono);color:var(--muted);margin-left:auto}
+.tree summary.dom{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tree summary.car{color:var(--accent)}
+.leafbtn{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;padding:3px 6px;border-radius:5px;font-size:13.5px}
+.leafbtn:hover{background:var(--soft)}
+.leafbtn[aria-current="true"]{background:var(--leaf-soft);color:var(--leaf);font-weight:600}
+.loading{font-size:13px;color:var(--muted);padding:4px 8px}
+.stagecard{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:grid}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.btn{font:600 13px var(--body);border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:5px 11px;border-radius:7px;cursor:pointer}
+.btn[aria-pressed="true"],.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.legend{display:flex;align-items:center;gap:8px;font:500 11px var(--mono);color:var(--muted)}
+.legend i{width:120px;max-width:26vw;height:9px;border-radius:5px;background:linear-gradient(90deg,var(--fade),var(--zero),var(--grow))}
+.stagehead{padding:10px 14px 0;display:grid;gap:2px}
+.stagehead p{margin:0;font-size:13.5px;color:var(--muted)}
+.stagehead .up{justify-self:start;margin-bottom:2px}
+.stage{position:relative;background:var(--stage)}
+canvas{display:block;width:100%;height:min(70vh,620px);min-height:400px;touch-action:none;cursor:grab}
+canvas.dragging{cursor:grabbing}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.14);max-width:280px;z-index:2}
+.tip b{display:block}
+.hint{position:absolute;left:12px;bottom:8px;font:500 11px var(--mono);color:var(--muted);pointer-events:none}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px;font-size:14px}
+.detail{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:920px){.detail{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+.crumbs{font:500 12px var(--mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 6px}
+.crumbs span+span::before{content:"/";margin-right:6px;opacity:.6}
+.aka{font-size:13px;color:var(--muted);margin:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.leafskills{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px}
+.leafskills div{background:var(--leaf-soft);border-left:3px solid var(--leaf);border-radius:4px;padding:7px 10px;font-size:14px}
+.rows{display:grid;gap:4px}
+.r{display:grid;grid-template-columns:minmax(0,1fr) 110px 30px;gap:8px;align-items:center;font-size:13px}
+.track{height:8px;background:var(--soft);border-radius:4px;position:relative}
+.track i{position:absolute;top:0;bottom:0;border-radius:4px}
+.track::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--muted);opacity:.5}
+.num{font:600 12px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.pos{color:var(--grow)}.neg{color:var(--fade)}
+details.more>summary{cursor:pointer;font-weight:600;list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"+ ";color:var(--accent)}
+details.more[open]>summary::before{content:"− "}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:13px;padding:3px 9px;border-radius:999px;background:var(--accent-soft)}
+.cmp{display:flex;flex-wrap:wrap;gap:6px}
+.cmp span{font-size:13px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--leaf-soft);display:inline-flex;gap:4px;align-items:center}
+.cmp button{all:unset;cursor:pointer;padding:0 6px;color:var(--muted)}
+.hits{display:grid;gap:2px}
+.hit{all:unset;cursor:pointer;display:block;padding:5px 8px;border-radius:6px;font-size:13.5px}
+.hit:hover{background:var(--soft)}
+.hit small{display:block;color:var(--muted);font-size:12px}
+.note{font-size:13px;color:var(--muted);max-width:95ch;margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.two{grid-template-columns:1fr}}
+.pagetabs{display:flex;gap:6px;border-bottom:1px solid var(--line);padding-bottom:0}
+.pagetabs button{all:unset;cursor:pointer;font:600 14.5px var(--body);padding:8px 14px;border-radius:8px 8px 0 0;color:var(--muted);border:1px solid transparent;border-bottom:0;margin-bottom:-1px}
+.pagetabs button[aria-selected="true"]{color:var(--ink);background:var(--panel);border-color:var(--line)}
+.pagetabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sw-pickers{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:end}
+@media (max-width:700px){.sw-pickers{grid-template-columns:1fr}.sw-pickers #swSwap{justify-self:start}}
+.picker{position:relative;display:grid;gap:4px}
+.picker label{font:600 12.5px var(--body);color:var(--muted)}
+.sugg{position:absolute;top:100%;left:0;right:0;z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:320px;overflow:auto;padding:4px;margin-top:4px}
+.sugg button{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;padding:6px 8px;border-radius:6px;font-size:14px}
+.sugg button:hover,.sugg button[aria-selected="true"]{background:var(--soft)}
+.sugg small{display:block;color:var(--muted);font-size:12px}
+.chipbtn{all:unset;cursor:pointer;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+.chipbtn:hover{outline:1px solid var(--accent)}
+.chipbtn:focus-visible{outline:2px solid var(--accent)}
+.sw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:920px){.sw-grid{grid-template-columns:1fr}}
+.verdict{display:grid;gap:10px}
+.pill{display:inline-block;font:700 13px var(--body);padding:3px 10px;border-radius:999px;color:#fff;background:var(--c)}
+.meter{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--grow) 0 25%,var(--accent) 25% 40%,var(--leaf) 40% 60%,var(--fade) 60% 100%);opacity:.9}
+.meter i{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--ink);transform:translateX(-2px)}
+.meterlab{position:relative;height:16px;font:500 11px var(--mono);color:var(--muted)}
+.meterlab>span{position:absolute;top:2px;transform:translateX(-50%);white-space:nowrap}
+.meterlab>span:first-child{transform:none}.meterlab>span:last-child{transform:translateX(-100%)}
+@media (max-width:600px){.meterlab .long{display:none}}
+.parts{display:grid;gap:6px}
+.part{display:grid;grid-template-columns:minmax(0,1fr) 120px 44px;gap:8px;align-items:center;font-size:13px}
+.part .bar{height:8px;border-radius:4px;background:var(--soft);position:relative;overflow:hidden}
+.part .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:4px}
+.status{font:600 11.5px var(--body);padding:1px 7px;border-radius:999px;white-space:nowrap}
+.st-have{background:color-mix(in srgb,var(--grow) 18%,transparent);color:var(--grow)}
+.st-part{background:color-mix(in srgb,var(--leaf) 18%,transparent);color:var(--leaf)}
+.st-learn{background:color-mix(in srgb,var(--fade) 16%,transparent);color:var(--fade)}
+.srow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.srow:first-child{border-top:0}
+.srow small{grid-column:2;color:var(--muted);font-size:12.5px}
+.route{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.route .stop{display:grid;gap:2px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:13.5px;min-width:0}
+.route .stop b{font-weight:700}
+.route .arrow{display:grid;justify-items:center;font:500 11px var(--mono);color:var(--muted);gap:2px}
+.route .arrow button{all:unset;cursor:pointer;color:var(--accent);font:600 11.5px var(--body)}
+.route .arrow button:focus-visible{outline:2px solid var(--accent)}
+.creds ul{margin:4px 0 0;padding-left:18px}
+.creds li{margin:2px 0;font-size:14px}
+.major{font:700 10.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--fade);margin-left:6px}
+.movelist{display:grid;gap:2px}
+.movelist button{all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:5px 8px;border-radius:6px;font-size:13.5px}
+.movelist button:hover{background:var(--soft)}
+.movelist button:focus-visible{outline:2px solid var(--accent)}
+.movelist small{color:var(--muted);font-size:12px;display:block}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--c);margin-right:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow" id="eyebrow">Career skill tree · growing field by field</span>
+  <h1>Career Skill Tree</h1>
+  <p class="lede">Every job carries three layers of skills: 20 universal skills, 50 core skills shared by its career, and 10 skills that set it apart from its neighbors. The surface shows which talents each job grows (up to +5) or lets fade (down to −5). Browse the tree, search any job or skill, or add jobs to compare them on one surface. Use Career switch to see what it takes to move from one job to another.</p>
+</header>
+<div class="pagetabs" role="tablist" aria-label="Pages">
+  <button role="tab" id="tab-explore" aria-selected="true" aria-controls="page-explore">Explorer</button>
+  <button role="tab" id="tab-switch" aria-selected="false" aria-controls="page-switch">Career switch</button>
+</div>
+<div id="page-switch" role="tabpanel" aria-labelledby="tab-switch" hidden style="display:grid;gap:18px">
+  <section class="card">
+    <h2>How do I get from one job to another?</h2>
+    <p class="note">Pick the job you have and the job or career you want. You'll see how big the move is, the education and credentials it takes, which skills carry over and which to learn, and a stepping-stone route when one makes each step smaller.</p>
+    <div class="sw-pickers">
+      <div class="picker"><label for="swFrom">From: your job</label><input id="swFrom" type="search" autocomplete="off" placeholder="e.g. EV Charger Installer" role="combobox" aria-expanded="false" aria-controls="swFromS"><div class="sugg" id="swFromS" role="listbox" hidden></div></div>
+      <button class="btn" id="swSwap" aria-label="Swap from and to">⇄ Swap</button>
+      <div class="picker"><label for="swTo">To: a job or a whole career</label><input id="swTo" type="search" autocomplete="off" placeholder="e.g. Aircraft Mechanic or Aerospace Engineer" role="combobox" aria-expanded="false" aria-controls="swToS"><div class="sugg" id="swToS" role="listbox" hidden></div></div>
+    </div>
+    <div class="chips" id="swExamples" aria-label="Examples"></div>
+  </section>
+  <div id="swOut" aria-live="polite"></div>
+</div>
+<div id="page-explore" role="tabpanel" aria-labelledby="tab-explore" style="display:grid;gap:18px">
+<div class="stats" id="stats"></div>
+
+<div class="main">
+  <nav aria-label="Career tree">
+    <input id="q" type="search" placeholder="Search jobs, other names, careers or skills" aria-label="Search">
+    <div class="hits" id="hits" hidden></div>
+    <div class="tree" id="tree"></div>
+  </nav>
+  <div class="stagecard">
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Surface">
+        <button class="btn" data-mode="overview" aria-pressed="true">All fields</button>
+        <button class="btn" data-mode="career" aria-pressed="false">This career</button>
+        <button class="btn" data-mode="compare" aria-pressed="false">Compare jobs</button>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button class="btn" data-view="3d">3D</button>
+        <button class="btn" data-view="top">Map</button>
+        <button class="btn" data-view="side">Side</button>
+        <button class="btn" id="zin" aria-label="Zoom in">+</button>
+        <button class="btn" id="zout" aria-label="Zoom out">−</button>
+      </div>
+      <div class="legend"><span>fades</span><i></i><span>grows</span></div>
+    </div>
+    <div class="stagehead"><button class="btn up" id="ovback" hidden>← All fields</button><h3 id="stitle"></h3><p id="ssub"></p></div>
+    <div class="stage">
+      <canvas id="cv" tabindex="0" aria-label="3D talent surface"></canvas>
+      <div class="tip" id="tip" hidden></div>
+      <div class="empty" id="empty" hidden></div>
+      <div class="hint">drag · rotate &nbsp; scroll · zoom &nbsp; click · open</div>
+    </div>
+  </div>
+</div>
+
+<div class="detail">
+  <section class="card" id="job"><p class="note">Pick a job in the tree or click the surface.</p></section>
+  <section class="card" id="side">
+    <div class="row"><h2>Compare list</h2><button class="btn" id="clearcmp">Clear</button></div>
+    <p class="note">Add jobs from any field to compare them on the shared talents. Up to 40 jobs.</p>
+    <div class="cmp" id="cmplist"></div>
+    <div id="career"></div>
+  </section>
+</div>
+</div>
+<p class="note">Skill lists, talent scores and entry requirements are expert-informed estimates built from standard job descriptions, licensing and training requirements, and professional society specialties, not survey data. Each career's shared-talent scores are derived from its tailored talent scores plus a career baseline. Duties and licensing rules vary by employer, state and seniority; check your state's licensing board before you commit to a path.</p>
+</div>
+
+<script src="data/meta.js"></script>
+<script>
+const M=window.__META__;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const css=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const hex=h=>{h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));};
+const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
+const fmt=v=>{const r=Math.round(v*10)/10;return (r>0?'+':'')+(Number.isInteger(r)?r:r.toFixed(1));};
+let PAL={};
+function readPal(){PAL={grow:hex(css('--grow')),fade:hex(css('--fade')),zero:hex(css('--zero')),ink:css('--ink'),muted:css('--muted'),line:css('--line'),accent:css('--accent'),leaf:css('--leaf')};}
+function colorOf(v,shade=1){const c=v>=0?mix(PAL.zero,PAL.grow,Math.min(1,v/5)):mix(PAL.zero,PAL.fade,Math.min(1,-v/5));return `rgb(${c.map(x=>Math.round(Math.max(0,Math.min(255,x*shade)))).join(',')})`;}
+const GROUP_COL=['#2753c0','#a35f00','#0e8a6f','#8a3fb8','#c0392b','#2c7a91','#6b6f1e','#b8457a','#3d6b35','#7a5c2e'];
+
+// ---------- data loading ----------
+const loaded={}, waiting={};
+window.__domainLoaded=(slug,data)=>{loaded[slug]=data.jobs; (waiting[slug]||[]).forEach(f=>f()); delete waiting[slug];};
+function ensureDomain(slug){
+  if(loaded[slug]) return Promise.resolve(loaded[slug]);
+  return new Promise((res,rej)=>{
+    const first=!waiting[slug]; (waiting[slug]=waiting[slug]||[]).push(()=>res(loaded[slug]));
+    if(first){const s=document.createElement('script'); s.src='data/d-'+slug+'.js'; s.onerror=()=>rej(new Error('Could not load '+slug)); document.head.appendChild(s);}
+  });
+}
+const domBySlug=Object.fromEntries(M.domains.map(d=>[d.slug,d]));
+const job=(ref)=>loaded[ref.slug][ref.i];
+const careerOf=(ref)=>M.careers[job(ref).c];
+
+// ---------- stats ----------
+const totJobs=M.domains.reduce((s,d)=>s+d.jobs,0);
+document.getElementById('stats').innerHTML=[
+ [M.domains.length,'fields'],[M.careers.length,'careers × 50 core skills'],[totJobs.toLocaleString(),'jobs × 10 skills'],
+ [M.titles.toLocaleString(),'searchable job titles'],[M.universal.length,'universal skills'],[M.shared.length,'shared talents']
+].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+document.getElementById('eyebrow').textContent=`${M.domains.map(d=>d.name).join(' · ')}`;
+
+// ---------- tree ----------
+const treeEl=document.getElementById('tree');
+function renderTree(){
+  treeEl.innerHTML='<ul>'+M.domains.map(d=>`<li><details data-dom="${d.slug}"><summary class="dom">${esc(d.name)}<span class="n">${d.jobs}</span></summary><ul>${
+    d.careerIds.map(ci=>{const c=M.careers[ci];return `<li><details data-car="${ci}"><summary class="car">${esc(c.name)}<span class="n">${c.n}</span></summary><div class="loading">Loading…</div></details></li>`;}).join('')
+  }</ul></details></li>`).join('')+'</ul>';
+  treeEl.querySelectorAll('details[data-car]').forEach(det=>det.addEventListener('toggle',()=>{ if(det.open) fillCareer(det); }));
+}
+async function fillCareer(det){
+  const ci=+det.dataset.car, c=M.careers[ci];
+  if(det.dataset.filled) return;
+  const jobs=await ensureDomain(c.slug);
+  const root={};
+  jobs.forEach((j,i)=>{ if(j.c!==ci) return; let n=root; j.p.forEach(k=>{n[k]=n[k]||{};n=n[k];}); (n.__l=n.__l||[]).push(i); });
+  const cnt=n=>(n.__l?.length||0)+Object.keys(n).filter(k=>k!=='__l').reduce((s,k)=>s+cnt(n[k]),0);
+  const rend=n=>{let h='<ul>';Object.keys(n).filter(k=>k!=='__l').forEach(k=>{h+=`<li><details><summary>${esc(k)}<span class="n">${cnt(n[k])}</span></summary>${rend(n[k])}</details></li>`;});
+    (n.__l||[]).forEach(i=>{h+=`<li><button class="leafbtn" data-slug="${c.slug}" data-i="${i}">${esc(jobs[i].n)}</button></li>`;});return h+'</ul>';};
+  det.querySelector('.loading')?.remove();
+  det.insertAdjacentHTML('beforeend',rend(root)); det.dataset.filled=1;
+  det.querySelectorAll('.leafbtn').forEach(b=>b.onclick=()=>selectJob({slug:b.dataset.slug,i:+b.dataset.i}));
+  markCurrent();
+}
+function markCurrent(){document.querySelectorAll('.leafbtn').forEach(b=>b.setAttribute('aria-current',!!current&&b.dataset.slug===current.slug&&+b.dataset.i===current.i));}
+async function revealInTree(ref){
+  const c=careerOf(ref);
+  const dd=treeEl.querySelector(`details[data-dom="${c.slug}"]`); if(dd) dd.open=true;
+  const cd=treeEl.querySelector(`details[data-car="${job(ref).c}"]`); if(cd){cd.open=true; await fillCareer(cd);}
+  const btn=treeEl.querySelector(`.leafbtn[data-slug="${ref.slug}"][data-i="${ref.i}"]`);
+  if(btn){let p=btn.parentElement; while(p&&p!==treeEl){ if(p.tagName==='DETAILS') p.open=true; p=p.parentElement;} }
+  markCurrent();
+}
+
+// ---------- surface renderer ----------
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), tip=document.getElementById('tip'), emptyEl=document.getElementById('empty');
+let W=0,H=0; const cam={yaw:-0.35,pitch:0.95,zoom:1};
+const VIEWS={'3d':{yaw:-0.35,pitch:0.95},'top':{yaw:0,pitch:Math.PI/2-0.001},'side':{yaw:0,pitch:0.02}};
+let grid=null, hover=null;
+const WX=2.4, WY=1.6, HZ=0.3;
+function proj(x,y,z){const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw);const x1=x*cy-y*sy,y1=x*sy+y*cy;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);
+  const y2=y1*sp-z*cp,d=y1*cp+z*sp;const s=Math.min(W*0.74,H*1.5)*0.33*cam.zoom;const k=1/(1+d*0.18);return [W/2+Math.min(150,W*0.12)+x1*s*k,H*0.5+y2*s*k,d];}
+function resize(){const r=cv.getBoundingClientRect();const dpr=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+function wrapText(t,x,y,max,lh){const w=t.split(' ');let line='';for(const s of w){const tst=line?line+' '+s:s;if(ctx.measureText(tst).width>max&&line){ctx.fillText(line,x,y);y+=lh;line=s;}else line=tst;}ctx.fillText(line,x,y);}
+function draw(){
+  if(!W) return; ctx.clearRect(0,0,W,H);
+  if(!grid||grid.rows.length<2){emptyEl.hidden=false;emptyEl.textContent=grid?.emptyMsg||'Nothing to show yet.';return;} emptyEl.hidden=true;
+  const NX=grid.rows.length, NY=grid.cols.length, V=grid.values;
+  const wx=i=>(i/(NX-1)-0.5)*WX, wy=j=>(j/(NY-1)-0.5)*WY, wz=v=>v/5*HZ;
+  const P=[];for(let i=0;i<NX;i++){P[i]=[];for(let j=0;j<NY;j++)P[i][j]=proj(wx(i),wy(j),wz(V[i][j]));}
+  ctx.lineWidth=1;ctx.strokeStyle=PAL.line;ctx.beginPath();[[-WX/2,-WY/2],[WX/2,-WY/2],[WX/2,WY/2],[-WX/2,WY/2]].forEach((p,k)=>{const q=proj(p[0],p[1],-HZ);k?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.closePath();ctx.stroke();
+  (grid.groups||[]).forEach(g=>{if(!g.start)return;const x=(wx(g.start)+wx(g.start-1))/2;const a=proj(x,-WY/2,-HZ),c=proj(x,WY/2,-HZ);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(c[0],c[1]);ctx.stroke();});
+  const Q=[];
+  for(let i=0;i<NX-1;i++)for(let j=0;j<NY-1;j++){
+    const a=P[i][j],b=P[i+1][j],c=P[i+1][j+1],d=P[i][j+1];
+    const v=(V[i][j]+V[i+1][j]+V[i+1][j+1]+V[i][j+1])/4;
+    const dzx=(wz(V[i+1][j])-wz(V[i][j]))/(wx(i+1)-wx(i)),dzy=(wz(V[i][j+1])-wz(V[i][j]))/(wy(j+1)-wy(j));
+    const nl=Math.hypot(dzx,dzy,1);const shade=0.72+0.33*Math.max(0,(0.4*dzx+0.5*dzy+0.77)/nl);
+    Q.push({pts:[a,b,c,d],depth:(a[2]+b[2]+c[2]+d[2])/4,v,shade});
+  }
+  Q.sort((p,q)=>q.depth-p.depth);
+  const thin=NX*NY>3000;
+  Q.forEach(q=>{ctx.beginPath();q.pts.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=colorOf(q.v,q.shade);ctx.fill();if(!thin){ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=0.6;ctx.stroke();}else{ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=0.5;ctx.stroke();}});
+  const ridge=(i,col,w)=>{ctx.beginPath();for(let j=0;j<NY;j++){const p=P[i][j];j?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);}ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();};
+  if(hover&&hover.i!==grid.highlight) ridge(hover.i,PAL.muted,1.5);
+  if(grid.highlight!=null&&grid.highlight>=0) ridge(grid.highlight,PAL.leaf,2.5);
+  if(hover){const p=P[hover.i][hover.j];ctx.beginPath();ctx.arc(p[0],p[1],6,0,7);ctx.strokeStyle=PAL.ink;ctx.lineWidth=2;ctx.stroke();}
+  ctx.font='500 11px "IBM Plex Mono", monospace';ctx.fillStyle=PAL.muted;
+  const leftX=(proj(-WX/2,0,-HZ)[0]<=proj(WX/2,0,-HZ)[0])?-WX/2-0.05:WX/2+0.05;
+  const alignR=proj(leftX,0,-HZ)[0]<W/2;
+  const step=Math.max(1,Math.ceil(NY/ Math.max(6,(H/16))));
+  for(let j=0;j<NY;j+=step){const p=proj(leftX,wy(j),-HZ);ctx.textAlign=alignR?'right':'left';ctx.textBaseline='middle';ctx.fillText(grid.cols[j].length>30?grid.cols[j].slice(0,29)+'…':grid.cols[j],p[0]+(alignR?-4:4),p[1]);}
+  const frontY=(proj(0,WY/2,-HZ)[1]>=proj(0,-WY/2,-HZ)[1])?WY/2+0.06:-WY/2-0.06;
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.font='600 11px "Public Sans", sans-serif';
+  const s=Math.min(W*0.74,H*1.5)*0.33*cam.zoom;
+  (grid.groups||[]).forEach((g,k)=>{const span=g.end-g.start+1;const px=span/NX*WX*s;if(px<28)return;const x=(wx(g.start)+wx(g.end))/2;const p=proj(x,frontY,-HZ);ctx.fillStyle=GROUP_COL[k%GROUP_COL.length];wrapText(g.name,p[0],p[1]+2,Math.max(50,px*0.95),12);});
+}
+function pick(mx,my){if(!grid||grid.rows.length<2)return null;const NX=grid.rows.length,NY=grid.cols.length;const wx=i=>(i/(NX-1)-0.5)*WX,wy=j=>(j/(NY-1)-0.5)*WY,wz=v=>v/5*HZ;
+  let best=null,bd=16*16;for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){const p=proj(wx(i),wy(j),wz(grid.values[i][j]));const dd=(p[0]-mx)**2+(p[1]-my)**2;if(dd<bd||(best&&Math.abs(dd-bd)<25&&p[2]<best.d)){bd=dd;best={i,j,d:p[2]};}}return best;}
+let drag=null;
+cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw:cam.yaw,pitch:cam.pitch,moved:false};cv.setPointerCapture(e.pointerId);cv.classList.add('dragging');});
+cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;cam.yaw=drag.yaw+dx*0.008;cam.pitch=Math.max(0.02,Math.min(Math.PI/2-0.001,drag.pitch+dy*0.006));hover=null;tip.hidden=true;draw();return;}
+  hover=pick(mx,my);draw();
+  if(hover){const v=grid.values[hover.i][hover.j];tip.innerHTML=`<b>${esc(grid.rows[hover.i])}</b>${esc(grid.cols[hover.j])}: <span class="num ${v>0?'pos':v<0?'neg':''}">${fmt(v)}</span>${grid.rowSub?`<br><span style="color:var(--muted);font-size:12px">${esc(grid.rowSub[hover.i])}</span>`:''}`;
+    tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.min(mx+14,W-tw-8)+'px';tip.style.top=Math.max(8,my-64)+'px';}else tip.hidden=true;});
+cv.addEventListener('pointerup',e=>{cv.classList.remove('dragging');if(drag&&!drag.moved){const r=cv.getBoundingClientRect();const h=pick(e.clientX-r.left,e.clientY-r.top);if(h&&grid.onClick)grid.onClick(h.i,h.j);}drag=null;});
+cv.addEventListener('pointerleave',()=>{hover=null;tip.hidden=true;draw();});
+cv.addEventListener('wheel',e=>{e.preventDefault();cam.zoom=Math.max(0.5,Math.min(4,cam.zoom*(e.deltaY<0?1.1:0.9)));draw();},{passive:false});
+document.getElementById('zin').onclick=()=>{cam.zoom=Math.min(4,cam.zoom*1.2);draw();};
+document.getElementById('zout').onclick=()=>{cam.zoom=Math.max(0.5,cam.zoom/1.2);draw();};
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const v=VIEWS[b.dataset.view];const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const y0=cam.yaw,p0=cam.pitch,t0=performance.now(),dur=reduce?0:450;
+  const step=t=>{const k=dur?Math.min(1,(t-t0)/dur):1,e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;cam.yaw=y0+(v.yaw-y0)*e;cam.pitch=p0+(v.pitch-p0)*e;draw();if(k<1)requestAnimationFrame(step);};requestAnimationFrame(step);});
+
+// ---------- modes ----------
+let mode='overview', current=null, curCareer=null, compare=[], ovField=null;
+const modeBtns=[...document.querySelectorAll('[data-mode]')];
+function setMode(m){if(m==='overview'&&mode!=='overview')ovField=curCareer!=null?M.careers[curCareer].slug:null;mode=m;modeBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));buildGrid();}
+modeBtns.forEach(b=>b.onclick=()=>{if(b.dataset.mode==='overview'&&mode==='overview')ovField=null;setMode(b.dataset.mode);});
+document.getElementById('ovback').onclick=()=>{ovField=null;buildGrid();};
+function fieldAvg(d){const acc=M.shared.map(()=>0);let n=0;d.careerIds.forEach(ci=>{const c=M.careers[ci];c.avgShared.forEach((v,k)=>acc[k]+=v*c.n);n+=c.n;});return acc.map(v=>Math.round(v/Math.max(1,n)*10)/10);}
+function groupsFrom(labels){const g=[];labels.forEach((n,i)=>{const l=g[g.length-1];if(!l||l.name!==n)g.push({name:n,start:i,end:i});else l.end=i;});return g;}
+async function buildGrid(){
+  const st=document.getElementById('stitle'), ss=document.getElementById('ssub');
+  document.getElementById('ovback').hidden=!(mode==='overview'&&ovField);
+  if(mode==='overview'&&!ovField){
+    const ds=M.domains;
+    grid={rows:ds.map(d=>d.name),rowSub:ds.map(d=>`${d.careerIds.length} careers · ${d.jobs.toLocaleString()} jobs`),cols:M.shared,values:ds.map(fieldAvg),
+      groups:ds.length<=14?ds.map((d,i)=>({name:d.name,start:i,end:i})):[],highlight:curCareer!=null?ds.findIndex(d=>d.slug===M.careers[curCareer].slug):-1,
+      onClick:(i)=>{ovField=ds[i].slug;buildGrid();}};
+    st.textContent='All fields on the 24 shared talents';ss.textContent=`${ds.length} fields, each averaged over all of its jobs. Click a field to see its careers.`;
+  } else if(mode==='overview'){
+    const d=domBySlug[ovField], cs=d.careerIds;
+    grid={rows:cs.map(ci=>M.careers[ci].name),rowSub:cs.map(ci=>`average of ${M.careers[ci].n} jobs`),cols:M.shared,values:cs.map(ci=>M.careers[ci].avgShared),
+      groups:cs.length<=14?cs.map((ci,i)=>({name:M.careers[ci].name,start:i,end:i})):[],highlight:curCareer!=null?cs.indexOf(curCareer):-1,
+      onClick:(i)=>{curCareer=cs[i];showCareer(curCareer);setMode('career');}};
+    st.textContent=`${d.name}: ${cs.length} careers on the 24 shared talents`;ss.textContent='Each career is averaged over its jobs. Click a career to open its own surface.';
+  } else if(mode==='career'){
+    if(curCareer==null){grid={rows:[],emptyMsg:'Pick a career in the tree or on the All fields surface.'};st.textContent='This career';ss.textContent='';draw();return;}
+    const c=M.careers[curCareer]; const jobs=await ensureDomain(c.slug); const idx=jobs.map((j,i)=>j.c===curCareer?i:-1).filter(i=>i>=0);
+    grid={rows:idx.map(i=>jobs[i].n),rowSub:idx.map(i=>jobs[i].p.join(' / ')),cols:c.talents,values:idx.map(i=>jobs[i].t),
+      groups:groupsFrom(idx.map(i=>jobs[i].p[0]||c.name)),highlight:current&&current.slug===c.slug?idx.indexOf(current.i):-1,
+      onClick:(i)=>selectJob({slug:c.slug,i:idx[i]},false)};
+    st.textContent=`${c.name}: ${idx.length} jobs × ${c.talents.length} tailored talents`;ss.textContent='Jobs run along one axis in tree order; each branch forms its own region.';
+  } else {
+    if(compare.length<2){grid={rows:[],emptyMsg:'Add at least two jobs to the compare list (use "Compare" on any job).'};st.textContent='Compare jobs';ss.textContent='';draw();return;}
+    await Promise.all([...new Set(compare.map(r=>r.slug))].map(ensureDomain));
+    grid={rows:compare.map(r=>job(r).n),rowSub:compare.map(r=>`${careerOf(r).name} · ${job(r).p.join(' / ')}`),cols:M.shared,values:compare.map(r=>job(r).s),
+      groups:compare.length<=14?compare.map((r,i)=>({name:job(r).n,start:i,end:i})):groupsFrom(compare.map(r=>careerOf(r).name)),highlight:current?compare.findIndex(r=>r.slug===current.slug&&r.i===current.i):-1,
+      onClick:(i)=>selectJob(compare[i],false)};
+    st.textContent=`Comparing ${compare.length} jobs on the 24 shared talents`;ss.textContent='Shared talents let you compare jobs from different fields on one scale.';
+  }
+  draw();
+}
+
+// ---------- detail ----------
+const bars=(labels,vals)=>{const o=labels.map((t,j)=>({t,v:vals[j]})).sort((a,b)=>b.v-a.v);return `<div class="rows">${o.map(r=>{const pct=Math.min(1,Math.abs(r.v)/5)*50,left=r.v>=0?50:50-pct;return `<div class="r"><span>${esc(r.t)}</span><span class="track"><i style="left:${left}%;width:${pct}%;background:${colorOf(r.v)}"></i></span><span class="num ${r.v>0?'pos':r.v<0?'neg':''}">${fmt(r.v)}</span></div>`;}).join('')}</div>`;};
+async function selectJob(ref,rebuild=true){
+  await ensureDomain(ref.slug); current=ref; const j=job(ref), c=careerOf(ref);
+  const inCmp=compare.some(r=>r.slug===ref.slug&&r.i===ref.i);
+  document.getElementById('job').innerHTML=`
+    <div class="crumbs"><span>${esc(c.domain)}</span><span>${esc(c.name)}</span>${j.p.map(p=>`<span>${esc(p)}</span>`).join('')}</div>
+    <div class="row"><h2>${esc(j.n)}</h2><div class="seg"><button class="btn ${inCmp?'':'primary'}" id="cmpbtn">${inCmp?'Remove from compare':'Compare'}</button><button class="btn" id="carbtn">Career surface</button><button class="btn" id="swbtn">Plan a switch</button></div></div>
+    ${j.a.length?`<p class="aka">Also called: ${j.a.map(esc).join(', ')}</p>`:''}
+    <h3 style="color:var(--leaf)">10 skills that set this job apart</h3>
+    <div class="leafskills">${j.k.map(s=>`<div>${esc(s)}</div>`).join('')}</div>
+    <div class="two"><div><h3>${esc(c.name)} talents</h3>${bars(c.talents,j.t)}</div><div><h3>Shared talents</h3>${bars(M.shared,j.s)}</div></div>
+    <details class="more"><summary>50 core ${esc(c.name)} skills</summary><div class="chips">${c.skills.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div></details>
+    <details class="more"><summary>20 universal skills</summary><div class="chips">${M.universal.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div></details>`;
+  document.getElementById('cmpbtn').onclick=()=>{toggleCompare(ref);selectJob(ref,false);};
+  document.getElementById('carbtn').onclick=()=>{curCareer=j.c;showCareer(j.c);setMode('career');};
+  document.getElementById('swbtn').onclick=()=>goSwitch({name:j.n,kind:'job'},null);
+  if(curCareer!==j.c){curCareer=j.c;showCareer(j.c);}
+  revealInTree(ref);
+  if(rebuild&&mode==='overview') setMode('career'); else buildGrid();
+}
+function showCareer(ci){const c=M.careers[ci];
+  document.getElementById('career').innerHTML=`<h2 style="margin-top:8px">${esc(c.name)}</h2><p class="note">${esc(c.domain)} · ${c.n} jobs · ${c.talents.length} tailored talents</p>
+  <details class="more" open><summary>50 core skills</summary><div class="chips">${c.skills.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div></details>
+  <details class="more"><summary>Career average on shared talents</summary>${bars(M.shared,c.avgShared)}</details>`;}
+function toggleCompare(ref){const k=compare.findIndex(r=>r.slug===ref.slug&&r.i===ref.i);if(k>=0)compare.splice(k,1);else{compare.push(ref);if(compare.length>40)compare.shift();}renderCompare();if(mode==='compare')buildGrid();}
+function renderCompare(){const el=document.getElementById('cmplist');
+  el.innerHTML=compare.length?compare.map((r,k)=>`<span>${esc(job(r).n)}<button data-k="${k}" aria-label="Remove ${esc(job(r).n)}">×</button></span>`).join(''):'<p class="note">No jobs yet.</p>';
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{compare.splice(+b.dataset.k,1);renderCompare();if(mode==='compare')buildGrid();});}
+document.getElementById('clearcmp').onclick=()=>{compare=[];renderCompare();if(mode==='compare')buildGrid();};
+
+// ---------- search ----------
+const qEl=document.getElementById('q'),hitsEl=document.getElementById('hits');
+let allLoaded=false;
+async function loadAll(){await Promise.all(M.domains.map(d=>ensureDomain(d.slug)));allLoaded=true;}
+function norm(s){return s.toLowerCase();}
+function rank(s,q){ if(s===q) return 0; if(s.startsWith(q)) return 1; if(!s.includes(q)) return -1; return (s.includes(' '+q)||s.includes('('+q)||s.includes('-'+q)||s.includes('/'+q))?2:3; }
+qEl.oninput=async()=>{
+  const q=norm(qEl.value.trim()); if(!q){hitsEl.hidden=true;treeEl.hidden=false;return;}
+  const res=[];
+  for(const [n,al,ci,slug,i] of M.index){ let r=rank(norm(n),q), why=M.careers[ci].name;
+    if((r<0||r>1)&&al){ let best=null; for(const a of al.split('|')){ const ar=rank(norm(a),q); if(ar>=0&&(!best||ar<best[1])) best=[a,ar]; } if(best&&(r<0||best[1]+1<r)){ r=best[1]+1; why='Also called: '+best[0]; } }
+    if(r>=0) res.push({slug,i,title:n,why,r}); }
+  res.sort((a,b)=>a.r-b.r||a.title.length-b.title.length); if(res.length>60) res.length=60;
+  const cars=M.careers.map((c,ci)=>({c,ci})).filter(x=>norm(x.c.name).includes(q)).slice(0,8);
+  let h=cars.map(x=>`<button class="hit" data-car="${x.ci}">${esc(x.c.name)}<small>Career · ${x.c.n} jobs</small></button>`).join('');
+  h+=res.map(r=>`<button class="hit" data-slug="${r.slug}" data-i="${r.i}">${esc(r.title)}<small>${esc(r.why)}</small></button>`).join('');
+  if(q.length>=3){
+    if(!allLoaded){ h+=`<button class="hit" id="skillsearch">Search skills in every job<small>Loads all fields</small></button>`; }
+    else { let k=0; for(const d of M.domains){ const js=loaded[d.slug]; for(let i=0;i<js.length&&k<40;i++){ const s=js[i].k.find(x=>norm(x).includes(q)); if(s){k++;h+=`<button class="hit" data-slug="${d.slug}" data-i="${i}">${esc(js[i].n)}<small>Skill: ${esc(s)}</small></button>`;} } } }
+  }
+  hitsEl.innerHTML=h||'<p class="note">No matches. Try a shorter word.</p>'; hitsEl.hidden=false; treeEl.hidden=true;
+  hitsEl.querySelectorAll('.hit[data-slug]').forEach(b=>b.onclick=()=>selectJob({slug:b.dataset.slug,i:+b.dataset.i}));
+  hitsEl.querySelectorAll('.hit[data-car]').forEach(b=>b.onclick=()=>{curCareer=+b.dataset.car;showCareer(curCareer);setMode('career');});
+  const ss=document.getElementById('skillsearch'); if(ss) ss.onclick=async()=>{ss.innerHTML='Loading all fields…';await loadAll();qEl.oninput();};
+};
+
+// ENGINE START (a line-for-line port of switch_engine.py; the build checks both agree)
+const SWE=(()=>{
+  let SW=null, w2t=null; const tokCache=new Map(), coreCache=new Map();
+  const WORD_RE=/[a-z0-9][a-z0-9+#]*/g;
+  const words=s=>s.toLowerCase().match(WORD_RE)||[];
+  const credKey=c=>c.replace(/^\*+/,'').replace('[spec+]','').replace('[spec]','').replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').trim().toLowerCase();
+  const credLabel=c=>c.replace(/^\*+/,'').replace('[spec+]','').replace('[spec]','').trim();
+  const depthOf=y=>Math.min(1,0.4+0.15*(y[0]+y[1])/2);
+  const asInt=s=>Math.floor(s*1000+0.5);
+  const labelFor=s=>{for(const [cut,name] of SW.labels) if(s<cut) return name; return SW.labels[SW.labels.length-1][1];};
+  const eduGap=(xe,xf,ye,yf)=>(ye<=2||yf.includes('any')||yf.includes(xf))?Math.max(0,ye-xe):Math.max(0,ye-xe,ye-2);
+  const byName=(a,b)=>a<b?-1:a>b?1:0;
+  function init(data){SW=data;w2t=new Map(Object.entries(data.w2t));}
+  function tokens(s){let t=tokCache.get(s);if(!t){const set=new Set();for(const w of words(s)){const v=w2t.get(w);if(v!==undefined)set.add(v);}t=[...set].sort((a,b)=>a-b);tokCache.set(s,t);}return t;}
+  function cover(a,b){let den=0;for(const t of b)den+=SW.idf[t];if(den<=0)return 0;const sa=new Set(a);let num=0;for(const t of b)if(sa.has(t))num+=SW.idf[t];return num/den;}
+  const credit=c=>c>=SW.have?1:c>=SW.partial?0.5:0;
+  // env: {job(name)->{career,path,skills,shared,cred}, career(name)->{core,avgShared,cred}, shared:[names], jobsOf(career)->[names]}
+  let ENV=null; const setEnv=e=>{ENV=e;};
+  function profile(name,kind='job'){
+    if(kind==='job'){const j=ENV.job(name),c=ENV.career(j.career);return {kind:'job',name,career:j.career,path:j.path.slice(),skills:j.skills.slice(),core:c.core.slice(),shared:j.shared.slice(),cred:j.cred};}
+    const c=ENV.career(name);return {kind:'career',name,career:name,path:[],skills:[],core:c.core.slice(),shared:c.avgShared.slice(),cred:c.cred};
+  }
+  function rows(skills,sources,srcTok){return skills.map(s=>{const b=tokens(s);let best=0,arg=null;sources.forEach((src,i)=>{const v=cover(srcTok[i],b);if(v>best){best=v;arg=src;}});return {skill:s,cover:best,credit:credit(best),match:arg};});}
+  function compare(X,Y){
+    const sameCareer=X.career===Y.career;
+    const sources=[];for(const s of X.skills.concat(X.core,ENV.universal)) if(!sources.includes(s)) sources.push(s);
+    const srcTok=sources.map(tokens);
+    const y10=rows(Y.skills,sources,srcTok);
+    let ycore=[];
+    if(!sameCareer){const key=X.kind+'\u0001'+X.name+'\u0001'+Y.career;ycore=coreCache.get(key);if(!ycore){ycore=rows(Y.core,sources,srcTok);coreCache.set(key,ycore);}}
+    let dCore=0;if(ycore.length){let s=0;for(const r of ycore)s+=r.credit;dCore=1-s/ycore.length;}
+    let dSkills=dCore;if(y10.length){let s=0;for(const r of y10)s+=r.credit;dSkills=1-s/y10.length;}
+    let ups=0;for(let k=0;k<X.shared.length;k++)ups+=Math.max(0,Y.shared[k]-X.shared[k]);
+    const dTalent=Math.min(1,ups/X.shared.length/10/SW.talentNorm);
+    const shifts=ENV.shared.map((n,k)=>({talent:n,from:X.shared[k],to:Y.shared[k],delta:Y.shared[k]-X.shared[k]})).sort((a,b)=>b.delta-a.delta);
+    const xc=X.cred,yc=Y.cred;
+    const g=eduGap(xc.edu,xc.fields[0],yc.edu,yc.fields);
+    const xkeys=new Set(xc.req.map(credKey));
+    const neu=[],held=[];let major=false,minor=false;
+    const samePath=sameCareer&&(Y.kind==='career'||JSON.stringify(X.path)===JSON.stringify(Y.path));
+    let extra=0,retrainMajor=false;
+    for(const r of yc.req){
+      const k=credKey(r),isMajor=r.startsWith('*'),heavy=r.endsWith('[spec+]'),spec=heavy||r.endsWith('[spec]');
+      if(spec){
+        if(X.kind==='job'&&Y.kind==='job'&&X.name===Y.name){held.push(credLabel(r));continue;}
+        if(samePath&&xkeys.has(k)){neu.push({cred:credLabel(r),major:false,note:'retraining in the new specialty'});minor=true;retrainMajor=retrainMajor||isMajor;if(heavy)extra=Math.max(extra,1);continue;}
+        neu.push({cred:credLabel(r),major:isMajor,note:'specific to the specialty'});
+        if(heavy)extra=Math.max(extra,2);
+      } else if(xkeys.has(k)){held.push(credLabel(r));continue;}
+      else neu.push({cred:credLabel(r),major:isMajor,note:''});
+      if(isMajor)major=true;else minor=true;
+    }
+    const dCred=0.7*Math.min(1,(g+extra)/3)+0.3*(major?1:minor?0.4:0);
+    const depth=depthOf(yc.yrs);
+    const W=SW.weights;
+    const score=depth*(W.skills*dSkills+W.core*dCore)+W.talent*dTalent+W.cred*dCred;
+    let time;
+    if(g===0&&extra>=2) time='Plan on years of specialty training (for example a residency, fellowship or doctorate)';
+    else if(g===0&&extra) time='Added specialty training, such as a fellowship or post-graduate certificate';
+    else if(g===0&&(major||retrainMajor)) time='Months to a couple of years, mainly to earn: '+neu.find(n=>n.major||n.note).cred;
+    else if(g===0) time='Mostly on-the-job: weeks to a few months of ramp-up';
+    else {const [lo,hi]=yc.yrs;time=`About ${lo===hi?String(lo):lo+'–'+hi} years from scratch; related experience often shortens it`;}
+    return {from:X.name,to:Y.name,toKind:Y.kind,sameCareer,score,gap:asInt(score),label:labelFor(score),
+      parts:{skills:dSkills,core:dCore,talent:dTalent,cred:dCred,depth},skills:y10,core:ycore,talents:shifts,
+      cred:{eduGap:g,specialtyTraining:extra,fromEdu:xc.edu,toEdu:yc.edu,toFields:yc.fields,neu,held,toPath:yc.path,toYears:yc.yrs,preferred:yc.pref.map(credLabel),overqualified:xc.edu-yc.edu>=2},time};
+  }
+  const gap=(x,y,kind='job')=>compare(profile(x),profile(y,kind)).gap;
+  function targets(name,kind){
+    if(kind==='job') return [name];
+    const cc=ENV.career(name).cred;
+    const need=new Set(cc.req.filter(r=>r.startsWith('*')&&!r.endsWith('[spec]')&&!r.endsWith('[spec+]')).map(credKey));
+    const jobs=ENV.jobsOf(name).slice().sort(byName);
+    const core=jobs.filter(n=>{const c=ENV.job(n).cred;if(c.edu<cc.edu)return false;const ks=new Set(c.req.map(credKey));for(const k of need)if(!ks.has(k))return false;return true;});
+    return core.length?core:jobs;
+  }
+  function closest(x,career){let best=null;for(const t of targets(career,'career')){const g=gap(x,t);if(!best||g<best[1])best=[t,g];}return best;}
+  const yearsMid=c=>(c.yrs[0]+c.yrs[1])/2;
+  function planRoute(x,tlist,direct,inn){
+    const R=SW.route,tset=new Set(tlist),ymid=new Map(tlist.map(t=>[t,yearsMid(ENV.job(t).cred)]));
+    const xkeys=new Set(ENV.job(x).cred.req.map(credKey));
+    const specMajor=c=>new Set(c.req.filter(r=>r.startsWith('*')&&(r.endsWith('[spec]')||r.endsWith('[spec+]'))).map(credKey));
+    const needSpec=new Map(tlist.map(t=>[t,[...specMajor(ENV.job(t).cred)].filter(k=>!xkeys.has(k))]));
+    const xEdu=ENV.job(x).cred.edu,xMid=yearsMid(ENV.job(x).cred);
+    const ok=(s,t)=>{const c=ENV.job(s).cred;if(s===x||tset.has(s)||yearsMid(c)>ymid.get(t)||c.edu<xEdu-1||yearsMid(c)<xMid/3)return false;const sm=specMajor(c);for(const k of needSpec.get(t))if(sm.has(k))return false;return true;};
+    const last=new Map();
+    for(const t of tlist) for(const [s,g] of (inn(t)||[])) if(ok(s,t)&&(!last.has(s)||g<last.get(s)[0])) last.set(s,[g,t]);
+    const cache=new Map();const g1=s=>{if(!cache.has(s))cache.set(s,gap(x,s));return cache.get(s);};
+    let best=null;const better=(k)=>!best||k[0]<best.key[0]||(k[0]===best.key[0]&&k[1]<best.key[1]);
+    for(const [s,[g2,t]] of last){const a=g1(s),b=Math.max(a,g2),tot=a+g2;
+      if(b<=direct-R.margin&&tot<=direct+R.slack){const key=[b+tot+2*R.stone_cost,b];if(better(key))best={key,path:[x,s,t],gaps:[a,g2]};}}
+    for(const [s2,[g3,t]] of last){for(const [s1,g2] of (inn(s2)||[])){
+      if(s1===s2||!ok(s1,t))continue; if(Math.max(g2,g3)>direct-R.margin)continue;
+      const a=g1(s1),b=Math.max(a,g2,g3),tot=a+g2+g3;
+      if(b<=direct-R.margin&&tot<=direct+2*R.slack){const key=[b+tot+4*R.stone_cost,b];if(better(key))best={key,path:[x,s1,s2,t],gaps:[a,g2,g3]};}}}
+    return best&&{path:best.path,gaps:best.gaps};
+  }
+  return {init,setEnv,profile,compare,gap,targets,closest,planRoute,labelFor,credKey,get data(){return SW;}};
+})();
+// ENGINE END
+
+// ---------- career switch page ----------
+const nameToG=new Map(M.index.map((r,g)=>[r[0],g]));
+const careerByName=new Map(M.careers.map((c,ci)=>[c.name,ci]));
+const jobsOfCareer=new Map();M.index.forEach((r,g)=>{const c=M.careers[r[2]].name;(jobsOfCareer.get(c)||jobsOfCareer.set(c,[]).get(c)).push(r[0]);});
+let swReady=null;
+function loadSwitch(){
+  if(swReady) return swReady;
+  swReady=new Promise((res,rej)=>{window.__switchLoaded=d=>{SWE.init(d);res(d);};const s=document.createElement('script');s.src='data/switch.js';s.onerror=()=>{swReady=null;rej(new Error('Could not load switch data'));};document.head.appendChild(s);});
+  return swReady;
+}
+function jobRow(name){const r=M.index[nameToG.get(name)];return loaded[r[3]][r[4]];}
+SWE.setEnv({
+  shared:M.shared,universal:M.universal,
+  job:(name)=>{const g=nameToG.get(name),r=M.index[g],j=loaded[r[3]][r[4]];return {career:M.careers[j.c].name,path:j.p,skills:j.k,shared:j.s,cred:SWE.data.creds[SWE.data.jobCred[g]]};},
+  career:(name)=>{const ci=careerByName.get(name),c=M.careers[ci];return {core:c.skills,avgShared:c.avgShared,cred:SWE.data.creds[SWE.data.careerCred[ci]]};},
+  jobsOf:(name)=>jobsOfCareer.get(name)||[],
+});
+const pairList=(flat)=>{const out=[];for(let i=0;i<flat.length;i+=2)out.push([M.index[flat[i]][0],flat[i+1]]);return out;};
+const innOf=(name)=>pairList(SWE.data.inn[nameToG.get(name)]);
+const outOf=(name)=>pairList(SWE.data.out[nameToG.get(name)]);
+const slugOfJob=(name)=>M.index[nameToG.get(name)][3];
+async function ensureJobs(names){await Promise.all([...new Set(names.map(slugOfJob))].map(ensureDomain));}
+const LABEL_COLOR={'Close move':'var(--grow)','Moderate move':'var(--accent)','Big move':'var(--leaf)','Major career change':'var(--fade)'};
+const pct=v=>Math.round(v*100)+'%';
+const EDU=()=>SWE.data.eduNames;
+let swFrom=null, swTo=null; // {name, kind}
+
+function pickerSetup(inputId,listId,allowCareers,onPick){
+  const inp=document.getElementById(inputId),list=document.getElementById(listId);let items=[],active=-1;
+  const close=()=>{list.hidden=true;inp.setAttribute('aria-expanded','false');active=-1;};
+  const render=()=>{list.innerHTML=items.map((it,i)=>`<button role="option" id="${listId}-${i}" aria-selected="${i===active}" data-i="${i}">${esc(it.title)}<small>${esc(it.sub)}</small></button>`).join('')||'<p class="note" style="padding:6px 8px">No matches.</p>';list.hidden=false;inp.setAttribute('aria-expanded','true');
+    list.querySelectorAll('button').forEach(b=>b.onmousedown=e=>{e.preventDefault();choose(+b.dataset.i);});};
+  const choose=i=>{const it=items[i];if(!it)return;inp.value=it.title;close();onPick({name:it.name,kind:it.kind});};
+  inp.addEventListener('input',()=>{const q=inp.value.trim().toLowerCase();if(q.length<2){close();return;}
+    const res=[];
+    if(allowCareers) M.careers.forEach(c=>{const n=c.name.toLowerCase();const r=n===q?0:n.startsWith(q)?1:n.includes(q)?2:-1;if(r>=0)res.push({r:r-0.5,title:c.name,sub:`Whole career · ${c.n} jobs · ${c.domain}`,name:c.name,kind:'career'});});
+    for(const [n,al,ci] of M.index){const nl=n.toLowerCase();let r=nl===q?0:nl.startsWith(q)?1:nl.includes(q)?2:-1,sub=M.careers[ci].name;
+      if(r<0||r>1){for(const a of (al?al.split('|'):[])){const a2=a.toLowerCase();const ar=a2===q?0:a2.startsWith(q)?1:a2.includes(q)?2:-1;if(ar>=0&&(r<0||ar+1<r)){r=ar+1;sub='Also called: '+a;}}}
+      if(r>=0)res.push({r,title:n,sub,name:n,kind:'job'});}
+    res.sort((a,b)=>a.r-b.r||a.title.length-b.title.length);items=res.slice(0,30);active=-1;render();});
+  inp.addEventListener('keydown',e=>{if(list.hidden)return;if(e.key==='ArrowDown'){active=Math.min(items.length-1,active+1);render();e.preventDefault();}
+    else if(e.key==='ArrowUp'){active=Math.max(0,active-1);render();e.preventDefault();}
+    else if(e.key==='Enter'){choose(active<0?0:active);e.preventDefault();} else if(e.key==='Escape')close();});
+  inp.addEventListener('blur',()=>setTimeout(close,150));
+}
+pickerSetup('swFrom','swFromS',false,v=>{swFrom=v;runSwitch();});
+pickerSetup('swTo','swToS',true,v=>{swTo=v;runSwitch();});
+document.getElementById('swSwap').onclick=()=>{if(!swFrom||!swTo)return;
+  if(swTo.kind!=='job'){document.getElementById('swOut').insertAdjacentHTML('afterbegin','<p class="note" id="swSwapNote">Swap needs a specific job on the To side.</p>');setTimeout(()=>document.getElementById('swSwapNote')?.remove(),2500);return;}
+  [swFrom,swTo]=[swTo,swFrom];setInputs();runSwitch();};
+function setInputs(){document.getElementById('swFrom').value=swFrom?swFrom.name:'';document.getElementById('swTo').value=swTo?swTo.name:'';}
+const EXAMPLES=[['EV Charger Installer','Aircraft Mechanic','job'],['Aircraft Mechanic','Aerospace Engineer','career'],['EV Charger Installer','Aerospace Engineer','career'],['Medical-Surgical Nurse','Family Nurse Practitioner','job'],['Help Desk Technician','Cybersecurity Professional','career'],['Army Combat Medic (68W)','Paramedic','job']].filter(([a,b,k])=>nameToG.has(a)&&(k==='job'?nameToG.has(b):careerByName.has(b)));
+document.getElementById('swExamples').innerHTML='<span class="note" style="align-self:center">Try:</span>'+EXAMPLES.map(([a,b,k],i)=>`<button class="chipbtn" data-ex="${i}">${esc(a)} → ${esc(b)}</button>`).join('');
+document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const [a,t,k]=EXAMPLES[+b.dataset.ex];swFrom={name:a,kind:'job'};swTo={name:t,kind:k};setInputs();runSwitch();});
+function goSwitch(from,to){showPage('switch');if(from)swFrom=from;if(to)swTo=to;setInputs();runSwitch();}
+
+let swRun=0;
+async function runSwitch(){
+  const out=document.getElementById('swOut');
+  if(!swFrom||!swTo){out.innerHTML='';return;}
+  if(swTo.kind==='job'&&swFrom.name===swTo.name){out.innerHTML='<p class="note">Pick two different jobs.</p>';return;}
+  const run=++swRun;
+  out.innerHTML='<p class="note">Working it out…</p>';
+  try{
+    await loadSwitch();
+    const x=swFrom.name, tkind=swTo.kind;
+    await ensureJobs([x]);
+    if(tkind==='career') await ensureDomain(M.careers[careerByName.get(swTo.name)].slug); else await ensureJobs([swTo.name]);
+    const T=SWE.targets(swTo.name,tkind);
+    const inn=new Map();const innCached=n=>{if(!inn.has(n))inn.set(n,innOf(n));return inn.get(n);};
+    const cand=new Set([x,...T]);for(const t of T)for(const [s] of innCached(t)){cand.add(s);for(const [s1] of innCached(s))cand.add(s1);}
+    for(const [s] of outOf(x))cand.add(s);
+    await ensureJobs([...cand]);
+    if(run!==swRun)return;
+    const X=SWE.profile(x), Y=SWE.profile(swTo.name,tkind);
+    const r=SWE.compare(X,Y);
+    const close=tkind==='career'?SWE.closest(x,swTo.name):null;
+    const route=SWE.planRoute(x,T,r.gap,innCached);
+    renderSwitch(r,close,route,T,innCached);
+  }catch(e){out.innerHTML=`<p class="note">Couldn't load the switch data (${esc(e.message)}). Try again.</p>`;}
+}
+function stepLabel(g){return SWE.labelFor(g/1000);}
+function renderSwitch(r,close,route,T,innCached){
+  const out=document.getElementById('swOut');const c=r.cred;const col=LABEL_COLOR[r.label];
+  const toTitle=r.toKind==='career'?`${esc(r.to)} (any specialty)`:esc(r.to);
+  const P=r.parts,W=SWE.data.weights;
+  const partRow=(name,v,w,note)=>`<div class="part"><span>${name}<br><small class="note">${note}</small></span><span class="bar"><i style="width:${Math.round(v*100)}%"></i></span><span class="num">${pct(v)}</span></div>`;
+  const newC=c.neu.length?`<ul>${c.neu.map(n=>`<li>${esc(n.cred)}${n.major?'<span class="major">major</span>':''}${n.note?` <small class="note">(${esc(n.note)})</small>`:''}</li>`).join('')}</ul>`:'<p class="note">None beyond what you already hold.</p>';
+  const specLine=c.specialtyTraining?`<p style="margin:4px 0 0">Plus years of specialty training (residency, fellowship, specialty board or doctorate).</p>`:'';
+  const eduLine=c.eduGap>0?`${esc(EDU()[c.fromEdu])} → <b>${esc(EDU()[c.toEdu])}</b> (${c.eduGap} level${c.eduGap>1?'s':''} up${c.toFields.includes('any')?'':'; usual fields: '+esc(c.toFields.join(', '))})`:`No step up needed (${esc(EDU()[c.toEdu])} is typical)`;
+  const st=v=>v>=1?'<span class="status st-have">Have</span>':v>=0.5?'<span class="status st-part">Partly</span>':'<span class="status st-learn">Learn</span>';
+  const skillRows=r.skills.map(s=>`<div class="srow">${st(s.credit)}<span>${esc(s.skill)}</span>${s.credit>0&&s.match?`<small>${M.universal.includes(s.match)?'from the universal skills: ':'from your: '}${esc(s.match)}</small>`:''}</div>`).join('');
+  let coreBlock;
+  if(r.sameCareer) coreBlock='<p class="note">Same career, so you already share its 50 core skills.</p>';
+  else {const have=r.core.filter(s=>s.credit>=1),part=r.core.filter(s=>s.credit===0.5),learn=r.core.filter(s=>s.credit===0);
+    coreBlock=`<p>You already cover <b>${have.length}</b> of ${r.core.length} core skills, and partly cover <b>${part.length}</b>.</p>
+    <details class="more" open><summary>To learn (${learn.length})</summary><div class="chips">${learn.map(s=>`<span class="chip">${esc(s.skill)}</span>`).join('')}</div></details>
+    ${part.length?`<details class="more"><summary>Partly there (${part.length})</summary><div class="chips">${part.map(s=>`<span class="chip" title="closest: ${esc(s.match||'')}">${esc(s.skill)}</span>`).join('')}</div></details>`:''}
+    ${have.length?`<details class="more"><summary>Carries over (${have.length})</summary><div class="chips">${have.map(s=>`<span class="chip">${esc(s.skill)}</span>`).join('')}</div></details>`:''}`;}
+  const ups=r.talents.filter(t=>t.delta>0.5).slice(0,5),downs=r.talents.filter(t=>t.delta<-0.5).slice(-3).reverse();
+  const tal=(t)=>`<div class="r"><span>${esc(t.talent)}</span><span class="track"><i style="left:${t.delta>=0?50:50-Math.min(1,Math.abs(t.delta)/5)*50}%;width:${Math.min(1,Math.abs(t.delta)/5)*50}%;background:${colorOf(t.delta)}"></i></span><span class="num ${t.delta>0?'pos':'neg'}">${fmt(t.delta)}</span></div>`;
+  let routeHtml;
+  if(route){const stops=route.path.map((n,i)=>`<div class="stop"><small class="note">${i===0?'You':i===route.path.length-1?'Target':'Stepping stone'}</small><b>${esc(n)}</b></div>`);
+    const arrows=route.gaps.map((g,i)=>`<div class="arrow"><span>→</span><span><span class="dot" style="--c:${LABEL_COLOR[stepLabel(g)]}"></span>${(g/1000).toFixed(2)}</span><button data-step="${i}">details</button></div>`);
+    routeHtml=`<div class="route">${stops.map((s,i)=>s+(arrows[i]||'')).join('')}</div><p class="note">Each step is smaller than the direct move (${(r.gap/1000).toFixed(2)})${r.toKind==='career'?' to the closest specialty':''}. The biggest step is ${(Math.max(...route.gaps)/1000).toFixed(2)}.</p>`;}
+  else routeHtml='<p class="note">No stepping stone makes the steps meaningfully smaller here. The direct move is the practical route.</p>';
+  const nextMoves=outOf(r.from).slice(0,6), waysIn=(()=>{if(r.toKind==='job')return innCached(r.to).filter(p=>p[0]!==r.from).slice(0,6);
+    const best=new Map();for(const t of T)for(const p of innCached(t)){if(p[0]===r.from||M.careers[M.index[nameToG.get(p[0])][2]].name===r.to)continue;if(!best.has(p[0])||p[1]<best.get(p[0])[1])best.set(p[0],p);}
+    return [...best.values()].sort((a,b)=>a[1]-b[1]||(a[0]<b[0]?-1:1)).slice(0,6);})();
+  const moveBtn=(p,kind)=>`<button data-move="${kind}" data-name="${esc(p[0])}"><span>${esc(p[0])}<small>${esc(M.careers[M.index[nameToG.get(p[0])][2]].name)}</small></span><span><span class="dot" style="--c:${LABEL_COLOR[stepLabel(p[1])]}"></span>${(p[1]/1000).toFixed(2)}</span></button>`;
+  out.innerHTML=`
+  <section class="card verdict">
+    <div class="crumbs"><span>${esc(r.from)}</span><span>${toTitle}</span></div>
+    <div class="row"><h2><span class="pill" style="--c:${col}">${esc(r.label)}</span> <span class="num" style="font-size:18px">${(r.score).toFixed(2)}</span></h2>
+      <button class="btn" id="swOpenFrom">Open ${esc(r.from)} in Explorer</button></div>
+    <div><div class="meter" role="img" aria-label="Move size ${r.score.toFixed(2)} on a 0 to 1 scale"><i style="left:${Math.min(100,r.score*100)}%"></i></div>
+      <div class="meterlab"><span style="left:0">0<span class="long"> same job</span></span><span style="left:25%">0.25</span><span style="left:40%">0.40</span><span style="left:60%">0.60</span><span style="left:100%">1<span class="long"> start over</span></span></div></div>
+    <p style="margin:0"><b>Time to qualify:</b> ${esc(r.time)}.</p>
+    ${close?`<p style="margin:0"><b>Closest specialty in ${esc(r.to)}:</b> <button class="chipbtn" id="swClosest">${esc(close[0])}</button> <span class="note">${(close[1]/1000).toFixed(2)} · ${esc(stepLabel(close[1]))}</span></p>`:''}
+    ${c.overqualified?'<p class="note" style="margin:0">You already have more formal education than this role usually asks for.</p>':''}
+    <div class="parts">
+      ${partRow('Skills that set the target apart',P.skills,W.skills,'share of its 10 distinguishing skills you would still need')}
+      ${partRow('Core skills of the target career',P.core,W.core,r.sameCareer?'same career: already shared':'share of its 50 core skills you would still need')}
+      ${partRow('Talent shift',P.talent,W.talent,'how much more the target leans on talents you use less')}
+      ${partRow('Education and credentials',P.cred,W.cred,'education step up plus new required licenses or certificates')}
+    </div>
+  </section>
+  <div class="sw-grid">
+    <section class="card creds"><h2>Education and credentials</h2>
+      <div><h3>Education</h3><p style="margin:4px 0 0">${eduLine}</p>${specLine}</div>
+      <div><h3>New requirements</h3>${newC}</div>
+      ${c.held.length?`<div><h3>Already covered</h3><ul>${c.held.map(h=>`<li>${esc(h)}</li>`).join('')}</ul></div>`:''}
+      <div><h3>Typical path in</h3><p style="margin:4px 0 0">${esc(c.toPath)}</p></div>
+      ${c.preferred.length?`<div><h3>Often preferred</h3><p style="margin:4px 0 0">${c.preferred.map(esc).join(' · ')}</p></div>`:''}
+    </section>
+    <section class="card"><h2>Stepping stones</h2>${routeHtml}
+      <div class="two"><div><h3>Easiest next moves from ${esc(r.from)}</h3><div class="movelist">${nextMoves.map(p=>moveBtn(p,'to')).join('')}</div></div>
+      <div><h3>Easiest ways into ${esc(r.to)}${r.toKind==='career'?' from other careers':''}</h3><div class="movelist">${waysIn.map(p=>moveBtn(p,'from')).join('')}</div></div></div>
+    </section>
+    <section class="card"><h2>${r.toKind==='job'?'Skills that set '+esc(r.to)+' apart':'Core skills of '+esc(r.to)}</h2>
+      ${r.toKind==='job'?`<div>${skillRows}</div>`:''}
+      ${r.toKind==='job'?`<h3 style="margin-top:6px">Core skills of ${esc(M.careers[careerByName.get(SWE.profile(r.to).career)].name)}</h3>`:''}
+      ${coreBlock}
+    </section>
+    <section class="card"><h2>Talent shift</h2>
+      ${ups.length?`<h3>You'd lean on more</h3><div class="rows">${ups.map(tal).join('')}</div>`:'<p class="note">No talent needs to grow much.</p>'}
+      ${downs.length?`<h3 style="margin-top:8px">You'd use less</h3><div class="rows">${downs.map(tal).join('')}</div>`:''}
+      <p class="note">Talent scores run from −5 (the job lets it fade) to +5 (the job grows it).</p>
+    </section>
+  </div>
+  <p class="note">How the score works: education and credentials count for 40%, the target career's core skills 35%, its distinguishing skills 15%, and talent shift 10%. Skill gaps count less when the target field takes only months to enter. A skill counts as covered when one of your skills (or one of the 20 universal skills everyone has) shares most of its key words. Stepping stones are ranked by the hardest step and the total effort together. Moves are labeled close (under 0.25), moderate (under 0.40), big (under 0.60) or a major career change.</p>`;
+  document.getElementById('swOpenFrom').onclick=()=>{showPage('explore');const g=nameToG.get(r.from),ix=M.index[g];selectJob({slug:ix[3],i:ix[4]});};
+  const cb=document.getElementById('swClosest');if(cb)cb.onclick=()=>{swTo={name:close[0],kind:'job'};setInputs();runSwitch();};
+  out.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const i=+b.dataset.step;swFrom={name:route.path[i],kind:'job'};swTo={name:route.path[i+1],kind:'job'};setInputs();runSwitch();});
+  out.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const n=b.dataset.name;if(b.dataset.move==='to')swTo={name:n,kind:'job'};else swFrom={name:n,kind:'job'};setInputs();runSwitch();});
+}
+function showPage(p){const sw=p==='switch';document.getElementById('page-switch').hidden=!sw;document.getElementById('page-explore').hidden=sw;
+  document.getElementById('tab-switch').setAttribute('aria-selected',sw);document.getElementById('tab-explore').setAttribute('aria-selected',!sw);
+  if(!sw)requestAnimationFrame(resize); else loadSwitch().catch(()=>{});}
+document.getElementById('tab-explore').onclick=()=>showPage('explore');
+document.getElementById('tab-switch').onclick=()=>showPage('switch');
+
+// ---------- start ----------
+readPal(); renderTree(); renderCompare();
+new ResizeObserver(resize).observe(cv);
+(async()=>{
+  const d0=M.defaults;
+  if(d0.compare) for(const r of d0.compare){await ensureDomain(r.slug);compare.push(r);} renderCompare();
+  if(d0.job){await selectJob(d0.job,false);}
+  setMode('overview'); resize();
+})();
+const repaint=()=>{readPal();draw();if(current)selectJob(current,false);};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',repaint);
+new MutationObserver(repaint).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+</script>
+</body>
+</html>
