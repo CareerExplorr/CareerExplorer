@@ -165,7 +165,6 @@ details.more[open]>summary::before{content:"− "}
 <body>
 <div class="wrap">
 <header>
-  <span class="eyebrow" id="eyebrow">Career skill tree · growing field by field</span>
   <h1>Career Skill Tree</h1>
   <p class="lede">Every job carries three layers of skills: 20 universal skills, 50 core skills shared by its career, and 10 skills that set it apart from its neighbors. The surface shows which talents each job grows (up to +5) or lets fade (down to −5). Browse the tree, search any job or skill, or add jobs to compare them on one surface. Use Career switch to see what it takes to move from one job to another.</p>
 </header>
@@ -268,7 +267,6 @@ document.getElementById('stats').innerHTML=[
  [M.domains.length,'fields'],[M.careers.length,'careers × 50 core skills'],[totJobs.toLocaleString(),'jobs × 10 skills'],
  [M.titles.toLocaleString(),'searchable job titles'],[M.universal.length,'universal skills'],[M.shared.length,'shared talents']
 ].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
-document.getElementById('eyebrow').textContent=`${M.domains.map(d=>d.name).join(' · ')}`;
 
 // ---------- tree ----------
 const treeEl=document.getElementById('tree');
