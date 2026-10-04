@@ -63,7 +63,19 @@ canvas{display:block;width:100%;height:min(70vh,620px);min-height:400px;touch-ac
 canvas.dragging{cursor:grabbing}
 .tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.14);max-width:280px;z-index:2}
 .tip b{display:block}
-.hint{position:absolute;left:12px;bottom:8px;font:500 11px var(--mono);color:var(--muted);pointer-events:none}
+.hint{position:absolute;left:12px;right:12px;bottom:8px;font:500 11px var(--mono);color:var(--muted);pointer-events:none}
+canvas.onlabel{cursor:pointer}
+.tip .tipnote{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+.pinbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px;border-top:1px solid var(--line);font-size:13px}
+.pinbar select{font:500 13px var(--body);border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:4px 8px;border-radius:7px;max-width:100%}
+.pin{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.pin.pt{background:var(--leaf-soft);color:var(--leaf)}
+.pin.off{opacity:.55;font-weight:500}
+.pin button{all:unset;cursor:pointer;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;color:var(--muted)}
+.pin button:hover{background:var(--soft);color:var(--ink)}
+.pin button:focus-visible,.pinbar .clear:focus-visible{outline:2px solid var(--accent)}
+.pinnote{color:var(--muted);font-size:12.5px}
+.pinbar .clear{all:unset;cursor:pointer;color:var(--accent);font-weight:600;margin-left:auto}
 .empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px;font-size:14px}
 .detail{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:920px){.detail{grid-template-columns:1fr}}
@@ -206,6 +218,7 @@ details.more[open]>summary::before{content:"− "}
       <div class="empty" id="empty" hidden></div>
       <div class="hint">drag · rotate &nbsp; scroll · zoom &nbsp; click · open</div>
     </div>
+    <div class="pinbar" id="pinbar" hidden></div>
   </div>
 </div>
 
@@ -231,7 +244,7 @@ const hex=h=>{h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),
 const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
 const fmt=v=>{const r=Math.round(v*10)/10;return (r>0?'+':'')+(Number.isInteger(r)?r:r.toFixed(1));};
 let PAL={};
-function readPal(){PAL={grow:hex(css('--grow')),fade:hex(css('--fade')),zero:hex(css('--zero')),ink:css('--ink'),muted:css('--muted'),line:css('--line'),accent:css('--accent'),leaf:css('--leaf')};}
+function readPal(){PAL={grow:hex(css('--grow')),fade:hex(css('--fade')),zero:hex(css('--zero')),ink:css('--ink'),muted:css('--muted'),line:css('--line'),accent:css('--accent'),leaf:css('--leaf'),panel:css('--panel'),accentSoft:css('--accent-soft')};}
 function colorOf(v,shade=1){const c=v>=0?mix(PAL.zero,PAL.grow,Math.min(1,v/5)):mix(PAL.zero,PAL.fade,Math.min(1,-v/5));return `rgb(${c.map(x=>Math.round(Math.max(0,Math.min(255,x*shade)))).join(',')})`;}
 const GROUP_COL=['#2753c0','#a35f00','#0e8a6f','#8a3fb8','#c0392b','#2c7a91','#6b6f1e','#b8457a','#3d6b35','#7a5c2e'];
 
@@ -293,7 +306,11 @@ async function revealInTree(ref){
 const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), tip=document.getElementById('tip'), emptyEl=document.getElementById('empty');
 let W=0,H=0; const cam={yaw:-0.35,pitch:0.95,zoom:1};
 const VIEWS={'3d':{yaw:-0.35,pitch:0.95},'top':{yaw:0,pitch:Math.PI/2-0.001},'side':{yaw:0,pitch:0.02}};
-let grid=null, hover=null;
+let grid=null, hover=null, mouse=null, hoverCol=-1, labelBoxes=[];
+const pinCols=new Set();      // talent names highlighted on every surface; click a name again to remove
+let pinPt=null, rowOff=null;  // the clicked point that stays highlighted, and a row whose highlight the user cleared
+const pinIdx=()=>{if(!pinPt||!grid||!grid.rows||pinPt.key!==grid.key)return null;const i=grid.rows.indexOf(pinPt.r),j=grid.cols.indexOf(pinPt.c);return i>=0&&j>=0?{i,j}:null;};
+const rowHL=()=>{const h=grid.highlight;return h!=null&&h>=0&&!(rowOff&&rowOff.key===grid.key&&rowOff.r===grid.rows[h])?h:-1;};
 const WX=2.4, WY=1.6, HZ=0.3;
 function proj(x,y,z){const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw);const x1=x*cy-y*sy,y1=x*sy+y*cy;const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);
   const y2=y1*sp-z*cp,d=y1*cp+z*sp;const s=Math.min(W*0.74,H*1.5)*0.33*cam.zoom;const k=1/(1+d*0.18);return [W/2+Math.min(150,W*0.12)+x1*s*k,H*0.5+y2*s*k,d];}
@@ -301,7 +318,7 @@ function resize(){const r=cv.getBoundingClientRect();const dpr=window.devicePixe
 function wrapText(t,x,y,max,lh){const w=t.split(' ');let line='';for(const s of w){const tst=line?line+' '+s:s;if(ctx.measureText(tst).width>max&&line){ctx.fillText(line,x,y);y+=lh;line=s;}else line=tst;}ctx.fillText(line,x,y);}
 function draw(){
   if(!W) return; ctx.clearRect(0,0,W,H);
-  if(!grid||grid.rows.length<2){emptyEl.hidden=false;emptyEl.textContent=grid?.emptyMsg||'Nothing to show yet.';return;} emptyEl.hidden=true;
+  if(!grid||grid.rows.length<2){emptyEl.hidden=false;emptyEl.textContent=grid?.emptyMsg||'Nothing to show yet.';labelBoxes=[];tip.hidden=true;return;} emptyEl.hidden=true;
   const NX=grid.rows.length, NY=grid.cols.length, V=grid.values;
   const wx=i=>(i/(NX-1)-0.5)*WX, wy=j=>(j/(NY-1)-0.5)*WY, wz=v=>v/5*HZ;
   const P=[];for(let i=0;i<NX;i++){P[i]=[];for(let j=0;j<NY;j++)P[i][j]=proj(wx(i),wy(j),wz(V[i][j]));}
@@ -319,30 +336,94 @@ function draw(){
   const thin=NX*NY>3000;
   Q.forEach(q=>{ctx.beginPath();q.pts.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=colorOf(q.v,q.shade);ctx.fill();if(!thin){ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=0.6;ctx.stroke();}else{ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=0.5;ctx.stroke();}});
   const ridge=(i,col,w)=>{ctx.beginPath();for(let j=0;j<NY;j++){const p=P[i][j];j?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);}ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();};
-  if(hover&&hover.i!==grid.highlight) ridge(hover.i,PAL.muted,1.5);
-  if(grid.highlight!=null&&grid.highlight>=0) ridge(grid.highlight,PAL.leaf,2.5);
+  const colLine=(j,col,w)=>{ctx.beginPath();for(let i=0;i<NX;i++){const p=P[i][j];i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);}ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();};
+  if(hoverCol>=0&&!pinCols.has(grid.cols[hoverCol])) colLine(hoverCol,PAL.muted,1.5);
+  grid.cols.forEach((c,j)=>{if(pinCols.has(c)) colLine(j,PAL.accent,2.5);});
+  const hl=rowHL(), pp=pinIdx();
+  if(hover&&hover.i!==hl) ridge(hover.i,PAL.muted,1.5);
+  if(hl>=0) ridge(hl,PAL.leaf,2.5);
+  if(pp&&pp.i!==hl) ridge(pp.i,PAL.leaf,2.5);
+  if(pp){const p=P[pp.i][pp.j];ctx.beginPath();ctx.arc(p[0],p[1],6.5,0,7);ctx.fillStyle=PAL.leaf;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=PAL.panel;ctx.stroke();
+    ctx.beginPath();ctx.arc(p[0],p[1],8.5,0,7);ctx.lineWidth=1.5;ctx.strokeStyle=PAL.ink;ctx.stroke();}
   if(hover){const p=P[hover.i][hover.j];ctx.beginPath();ctx.arc(p[0],p[1],6,0,7);ctx.strokeStyle=PAL.ink;ctx.lineWidth=2;ctx.stroke();}
-  ctx.font='500 11px "IBM Plex Mono", monospace';ctx.fillStyle=PAL.muted;
+  // talent names along the side: clickable (labelBoxes is the hit map used by labelAt)
   const leftX=(proj(-WX/2,0,-HZ)[0]<=proj(WX/2,0,-HZ)[0])?-WX/2-0.05:WX/2+0.05;
   const alignR=proj(leftX,0,-HZ)[0]<W/2;
-  const step=Math.max(1,Math.ceil(NY/ Math.max(6,(H/16))));
-  for(let j=0;j<NY;j+=step){const p=proj(leftX,wy(j),-HZ);ctx.textAlign=alignR?'right':'left';ctx.textBaseline='middle';ctx.fillText(grid.cols[j].length>30?grid.cols[j].slice(0,29)+'…':grid.cols[j],p[0]+(alignR?-4:4),p[1]);}
+  const lp=j=>proj(leftX,wy(j),-HZ);
+  const adj=NY>1?Math.hypot(lp(1)[0]-lp(0)[0],lp(1)[1]-lp(0)[1]):20;
+  const step=Math.max(1,Math.ceil(NY/Math.max(6,(H/16))),Math.ceil(12/Math.max(adj,0.5)));  // keep names at least ~12px apart
+  const hh=Math.max(6,Math.min(11,adj*step/2));
+  labelBoxes=[];ctx.textAlign=alignR?'right':'left';ctx.textBaseline='middle';
+  for(let j=0;j<NY;j++){
+    const on=pinCols.has(grid.cols[j]); if(j%step&&!on) continue;
+    const p=lp(j), x=p[0]+(alignR?-4:4), room=(alignR?x:W-x)-4;
+    ctx.font=(on?'700':'500')+' 11px "IBM Plex Mono", monospace';
+    let txt=grid.cols[j].length>30?grid.cols[j].slice(0,29)+'…':grid.cols[j];
+    while(txt.length>4&&ctx.measureText(txt).width>room) txt=txt.replace(/…$/,'').slice(0,-1).trimEnd()+'…';  // fit narrow screens
+    const w=ctx.measureText(txt).width, x0=alignR?x-w:x;
+    if(on){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x0-5,p[1]-8,w+10,16,8);else ctx.rect(x0-5,p[1]-8,w+10,16);ctx.fillStyle=PAL.accentSoft;ctx.fill();}
+    ctx.fillStyle=on?PAL.accent:j===hoverCol?PAL.ink:PAL.muted;ctx.fillText(txt,x,p[1]);
+    if(j===hoverCol&&!on) ctx.fillRect(x0,p[1]+6,w,1);
+    labelBoxes.push({j,x0:Math.max(0,x0-6),x1:Math.min(W,x0+w+6),cy:p[1],hh});
+  }
   const frontY=(proj(0,WY/2,-HZ)[1]>=proj(0,-WY/2,-HZ)[1])?WY/2+0.06:-WY/2-0.06;
   ctx.textAlign='center';ctx.textBaseline='top';ctx.font='600 11px "Public Sans", sans-serif';
   const s=Math.min(W*0.74,H*1.5)*0.33*cam.zoom;
   (grid.groups||[]).forEach((g,k)=>{const span=g.end-g.start+1;const px=span/NX*WX*s;if(px<28)return;const x=(wx(g.start)+wx(g.end))/2;const p=proj(x,frontY,-HZ);ctx.fillStyle=GROUP_COL[k%GROUP_COL.length];wrapText(g.name,p[0],p[1]+2,Math.max(50,px*0.95),12);});
+  // tooltip: hovered talent name, else hovered point, else the pinned point (follows it while rotating)
+  if(hoverCol>=0&&mouse) placeTip(colTipHTML(hoverCol),mouse.x,mouse.y);
+  else if(hover&&mouse) placeTip(tipHTML(hover.i,hover.j,!!pp&&pp.i===hover.i&&pp.j===hover.j),mouse.x,mouse.y);
+  else if(pp){const p=P[pp.i][pp.j];if(W<600)placeTip(tipHTML(pp.i,pp.j,true),-6,72);  // narrow screens: park it in the corner so it doesn't cover the surface
+    else if(p[0]>=0&&p[0]<=W&&p[1]>=0&&p[1]<=H)placeTip(tipHTML(pp.i,pp.j,true),p[0],p[1]);else tip.hidden=true;}
+  else tip.hidden=true;
+}
+const numSpan=v=>`<span class="num ${v>0?'pos':v<0?'neg':''}">${fmt(v)}</span>`;
+function tipHTML(i,j,pinned){return `<b>${esc(grid.rows[i])}</b>${esc(grid.cols[j])}: ${numSpan(grid.values[i][j])}${grid.rowSub?`<br><span style="color:var(--muted);font-size:12px">${esc(grid.rowSub[i])}</span>`:''}${pinned&&grid.pinnable?'<span class="tipnote">Pinned. Click this point again to clear it.</span>':''}`;}
+function colTipHTML(j){const V=grid.values;let hi=0,lo=0;V.forEach((r,i)=>{if(r[j]>V[hi][j])hi=i;if(r[j]<V[lo][j])lo=i;});
+  return `<b>${esc(grid.cols[j])}</b>Highest: ${esc(grid.rows[hi])} ${numSpan(V[hi][j])}<br>Lowest: ${esc(grid.rows[lo])} ${numSpan(V[lo][j])}<span class="tipnote">${pinCols.has(grid.cols[j])?'Click to remove the highlight':'Click to highlight it across every row'}</span>`;}
+function placeTip(html,x,y){tip.innerHTML=html;tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.max(8,Math.min(x+14,W-tw-8))+'px';tip.style.top=Math.max(8,y-64)+'px';}
+function labelAt(mx,my){let best=-1,bd=1e9;for(const b of labelBoxes){const d=Math.abs(my-b.cy);if(mx>=b.x0&&mx<=b.x1&&d<=b.hh&&d<bd){bd=d;best=b.j;}}return best;}
+function togglePinCol(name){if(pinCols.has(name))pinCols.delete(name);else pinCols.add(name);renderPins();draw();}
+function clearPoint(){const pp=pinIdx();if(pp)rowOff={key:grid.key,r:grid.rows[pp.i]};pinPt=null;}
+function clickPoint(i,j){
+  if(!grid.pinnable){if(grid.onClick)grid.onClick(i,j);return;}
+  const pp=pinIdx();
+  if(pp&&pp.i===i&&pp.j===j){clearPoint();renderPins();draw();return;}   // same point again: clear it
+  pinPt={key:grid.key,r:grid.rows[i],c:grid.cols[j]};rowOff=null;renderPins();draw();
+  if(grid.onClick)grid.onClick(i,j);
+}
+const pinbar=document.getElementById('pinbar');
+function renderPins(){
+  if(!grid||!grid.rows||grid.rows.length<2){pinbar.hidden=true;return;}
+  pinbar.hidden=false;
+  const pp=pinIdx(), here=new Set(grid.cols);
+  let h=`<select id="pinsel" aria-label="Highlight a talent"><option value="">Highlight a talent…</option>${grid.cols.map(c=>`<option value="${esc(c)}">${pinCols.has(c)?'✓ ':''}${esc(c)}</option>`).join('')}</select>`;
+  h+=[...pinCols].map(c=>`<span class="pin${here.has(c)?'':' off'}"${here.has(c)?'':' title="Not on this surface"'}>${esc(c)}<button data-col="${esc(c)}" aria-label="Remove highlight: ${esc(c)}">×</button></span>`).join('');
+  if(pp&&grid.pinnable) h+=`<span class="pin pt">${esc(grid.rows[pp.i])} · ${esc(grid.cols[pp.j])} ${fmt(grid.values[pp.i][pp.j])}<button data-pt="1" aria-label="Clear pinned point">×</button></span>`;
+  if(pinCols.size||(pp&&grid.pinnable)) h+=`<button class="clear" id="pinclear">Clear all</button>`;
+  else h+=`<span class="pinnote">${grid.pinnable?'Click a talent name to highlight it, or a point to pin it. Click again to clear.':'Click a talent name on the surface to highlight it. Click again to clear.'}</span>`;
+  pinbar.innerHTML=h;
+  const sel=document.getElementById('pinsel'); sel.onchange=()=>{if(sel.value)togglePinCol(sel.value);};
+  pinbar.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>togglePinCol(b.dataset.col));
+  pinbar.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{clearPoint();renderPins();draw();});
+  const cl=document.getElementById('pinclear'); if(cl) cl.onclick=()=>{pinCols.clear();clearPoint();renderPins();draw();};
 }
 function pick(mx,my){if(!grid||grid.rows.length<2)return null;const NX=grid.rows.length,NY=grid.cols.length;const wx=i=>(i/(NX-1)-0.5)*WX,wy=j=>(j/(NY-1)-0.5)*WY,wz=v=>v/5*HZ;
   let best=null,bd=16*16;for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){const p=proj(wx(i),wy(j),wz(grid.values[i][j]));const dd=(p[0]-mx)**2+(p[1]-my)**2;if(dd<bd||(best&&Math.abs(dd-bd)<25&&p[2]<best.d)){bd=dd;best={i,j,d:p[2]};}}return best;}
 let drag=null;
 cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw:cam.yaw,pitch:cam.pitch,moved:false};cv.setPointerCapture(e.pointerId);cv.classList.add('dragging');});
 cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
-  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;cam.yaw=drag.yaw+dx*0.008;cam.pitch=Math.max(0.02,Math.min(Math.PI/2-0.001,drag.pitch+dy*0.006));hover=null;tip.hidden=true;draw();return;}
-  hover=pick(mx,my);draw();
-  if(hover){const v=grid.values[hover.i][hover.j];tip.innerHTML=`<b>${esc(grid.rows[hover.i])}</b>${esc(grid.cols[hover.j])}: <span class="num ${v>0?'pos':v<0?'neg':''}">${fmt(v)}</span>${grid.rowSub?`<br><span style="color:var(--muted);font-size:12px">${esc(grid.rowSub[hover.i])}</span>`:''}`;
-    tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.min(mx+14,W-tw-8)+'px';tip.style.top=Math.max(8,my-64)+'px';}else tip.hidden=true;});
-cv.addEventListener('pointerup',e=>{cv.classList.remove('dragging');if(drag&&!drag.moved){const r=cv.getBoundingClientRect();const h=pick(e.clientX-r.left,e.clientY-r.top);if(h&&grid.onClick)grid.onClick(h.i,h.j);}drag=null;});
-cv.addEventListener('pointerleave',()=>{hover=null;tip.hidden=true;draw();});
+  mouse={x:mx,y:my};
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;
+    if(drag.moved){cam.yaw=drag.yaw+dx*0.008;cam.pitch=Math.max(0.02,Math.min(Math.PI/2-0.001,drag.pitch+dy*0.006));hover=null;hoverCol=-1;cv.classList.remove('onlabel');draw();}return;}
+  hoverCol=labelAt(mx,my); hover=hoverCol>=0?null:pick(mx,my); cv.classList.toggle('onlabel',hoverCol>=0); draw();});
+cv.addEventListener('pointerup',e=>{cv.classList.remove('dragging');
+  if(drag&&!drag.moved&&grid&&grid.rows&&grid.rows.length>=2){const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+    const j=labelAt(mx,my);
+    if(j>=0) togglePinCol(grid.cols[j]);
+    else{const h=pick(mx,my);if(h)clickPoint(h.i,h.j);}}
+  drag=null;});
+cv.addEventListener('pointerleave',()=>{hover=null;hoverCol=-1;mouse=null;cv.classList.remove('onlabel');draw();});
 cv.addEventListener('wheel',e=>{e.preventDefault();cam.zoom=Math.max(0.5,Math.min(4,cam.zoom*(e.deltaY<0?1.1:0.9)));draw();},{passive:false});
 document.getElementById('zin').onclick=()=>{cam.zoom=Math.min(4,cam.zoom*1.2);draw();};
 document.getElementById('zout').onclick=()=>{cam.zoom=Math.max(0.5,cam.zoom/1.2);draw();};
@@ -357,33 +438,34 @@ modeBtns.forEach(b=>b.onclick=()=>{if(b.dataset.mode==='overview'&&mode==='overv
 document.getElementById('ovback').onclick=()=>{ovField=null;buildGrid();};
 function fieldAvg(d){const acc=M.shared.map(()=>0);let n=0;d.careerIds.forEach(ci=>{const c=M.careers[ci];c.avgShared.forEach((v,k)=>acc[k]+=v*c.n);n+=c.n;});return acc.map(v=>Math.round(v/Math.max(1,n)*10)/10);}
 function groupsFrom(labels){const g=[];labels.forEach((n,i)=>{const l=g[g.length-1];if(!l||l.name!==n)g.push({name:n,start:i,end:i});else l.end=i;});return g;}
-async function buildGrid(){
+async function buildGrid(){await makeGrid();renderPins();}
+async function makeGrid(){
   const st=document.getElementById('stitle'), ss=document.getElementById('ssub');
   document.getElementById('ovback').hidden=!(mode==='overview'&&ovField);
   if(mode==='overview'&&!ovField){
     const ds=M.domains;
     grid={rows:ds.map(d=>d.name),rowSub:ds.map(d=>`${d.careerIds.length} careers · ${d.jobs.toLocaleString()} jobs`),cols:M.shared,values:ds.map(fieldAvg),
-      groups:ds.length<=14?ds.map((d,i)=>({name:d.name,start:i,end:i})):[],highlight:curCareer!=null?ds.findIndex(d=>d.slug===M.careers[curCareer].slug):-1,
+      groups:ds.length<=14?ds.map((d,i)=>({name:d.name,start:i,end:i})):[],highlight:curCareer!=null?ds.findIndex(d=>d.slug===M.careers[curCareer].slug):-1,key:'ov',
       onClick:(i)=>{ovField=ds[i].slug;buildGrid();}};
     st.textContent='All fields on the 24 shared talents';ss.textContent=`${ds.length} fields, each averaged over all of its jobs. Click a field to see its careers.`;
   } else if(mode==='overview'){
     const d=domBySlug[ovField], cs=d.careerIds;
     grid={rows:cs.map(ci=>M.careers[ci].name),rowSub:cs.map(ci=>`average of ${M.careers[ci].n} jobs`),cols:M.shared,values:cs.map(ci=>M.careers[ci].avgShared),
-      groups:cs.length<=14?cs.map((ci,i)=>({name:M.careers[ci].name,start:i,end:i})):[],highlight:curCareer!=null?cs.indexOf(curCareer):-1,
+      groups:cs.length<=14?cs.map((ci,i)=>({name:M.careers[ci].name,start:i,end:i})):[],highlight:curCareer!=null?cs.indexOf(curCareer):-1,key:'ov:'+ovField,
       onClick:(i)=>{curCareer=cs[i];showCareer(curCareer);setMode('career');}};
     st.textContent=`${d.name}: ${cs.length} careers on the 24 shared talents`;ss.textContent='Each career is averaged over its jobs. Click a career to open its own surface.';
   } else if(mode==='career'){
     if(curCareer==null){grid={rows:[],emptyMsg:'Pick a career in the tree or on the All fields surface.'};st.textContent='This career';ss.textContent='';draw();return;}
     const c=M.careers[curCareer]; const jobs=await ensureDomain(c.slug); const idx=jobs.map((j,i)=>j.c===curCareer?i:-1).filter(i=>i>=0);
     grid={rows:idx.map(i=>jobs[i].n),rowSub:idx.map(i=>jobs[i].p.join(' / ')),cols:c.talents,values:idx.map(i=>jobs[i].t),
-      groups:groupsFrom(idx.map(i=>jobs[i].p[0]||c.name)),highlight:current&&current.slug===c.slug?idx.indexOf(current.i):-1,
+      groups:groupsFrom(idx.map(i=>jobs[i].p[0]||c.name)),highlight:current&&current.slug===c.slug?idx.indexOf(current.i):-1,key:'car:'+curCareer,pinnable:true,
       onClick:(i)=>selectJob({slug:c.slug,i:idx[i]},false)};
     st.textContent=`${c.name}: ${idx.length} jobs × ${c.talents.length} tailored talents`;ss.textContent='Jobs run along one axis in tree order; each branch forms its own region.';
   } else {
     if(compare.length<2){grid={rows:[],emptyMsg:'Add at least two jobs to the compare list (use "Compare" on any job).'};st.textContent='Compare jobs';ss.textContent='';draw();return;}
     await Promise.all([...new Set(compare.map(r=>r.slug))].map(ensureDomain));
     grid={rows:compare.map(r=>job(r).n),rowSub:compare.map(r=>`${careerOf(r).name} · ${job(r).p.join(' / ')}`),cols:M.shared,values:compare.map(r=>job(r).s),
-      groups:compare.length<=14?compare.map((r,i)=>({name:job(r).n,start:i,end:i})):groupsFrom(compare.map(r=>careerOf(r).name)),highlight:current?compare.findIndex(r=>r.slug===current.slug&&r.i===current.i):-1,
+      groups:compare.length<=14?compare.map((r,i)=>({name:job(r).n,start:i,end:i})):groupsFrom(compare.map(r=>careerOf(r).name)),highlight:current?compare.findIndex(r=>r.slug===current.slug&&r.i===current.i):-1,key:'cmp',pinnable:true,
       onClick:(i)=>selectJob(compare[i],false)};
     st.textContent=`Comparing ${compare.length} jobs on the 24 shared talents`;ss.textContent='Shared talents let you compare jobs from different fields on one scale.';
   }
@@ -393,7 +475,7 @@ async function buildGrid(){
 // ---------- detail ----------
 const bars=(labels,vals)=>{const o=labels.map((t,j)=>({t,v:vals[j]})).sort((a,b)=>b.v-a.v);return `<div class="rows">${o.map(r=>{const pct=Math.min(1,Math.abs(r.v)/5)*50,left=r.v>=0?50:50-pct;return `<div class="r"><span>${esc(r.t)}</span><span class="track"><i style="left:${left}%;width:${pct}%;background:${colorOf(r.v)}"></i></span><span class="num ${r.v>0?'pos':r.v<0?'neg':''}">${fmt(r.v)}</span></div>`;}).join('')}</div>`;};
 async function selectJob(ref,rebuild=true){
-  await ensureDomain(ref.slug); current=ref; const j=job(ref), c=careerOf(ref);
+  await ensureDomain(ref.slug); current=ref; rowOff=null; const j=job(ref), c=careerOf(ref);
   const inCmp=compare.some(r=>r.slug===ref.slug&&r.i===ref.i);
   document.getElementById('job').innerHTML=`
     <div class="crumbs"><span>${esc(c.domain)}</span><span>${esc(c.name)}</span>${j.p.map(p=>`<span>${esc(p)}</span>`).join('')}</div>
