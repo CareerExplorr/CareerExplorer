@@ -6,7 +6,7 @@ Explore 7,706 US jobs across 267 careers and 23 fields: the skills each job
 uses, the talents it grows or lets fade, what it takes to get in, and how
 hard it is to switch from one job to another.
 
-Live site:  https://alex-m-0.github.io/CareerExplorer/
+Live site:  https://careerexplorr.github.io/CareerExplorer/
 
 No sign-up and no install. The site runs entirely in your browser.
 
