@@ -138,22 +138,6 @@ RUN IT ON YOUR COMPUTER
 
   then go to http://localhost:8000
 
-UPDATE THE LIVE SITE
-
-  The site is hosted on GitHub Pages from the main branch, root folder
-  (Settings > Pages). To publish a change:
-
-      git add -A
-      git commit -m "Describe your change"
-      git push
-
-  GitHub redeploys in a minute or two (watch the Actions tab). Then reload
-  the site with Ctrl+Shift+R (Cmd+Shift+R on Mac) to skip the cached copy.
-
-  The same folder also works on any other static host, such as Netlify,
-  Cloudflare Pages or Vercel.
-
-
 ------------------------------------------------------------------------------
  IMPORTANT NOTES
 ------------------------------------------------------------------------------
