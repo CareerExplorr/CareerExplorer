@@ -1,6 +1,6 @@
-==============================================================================
+=====================================
  CAREER EXPLORER  (Career Skill Tree)
-==============================================================================
+=====================================
 
 Explore 7,706 US jobs across 267 careers and 23 fields: the skills each job
 uses, the talents it grows or lets fade, what it takes to get in, and how
